@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         isLoading.value = false
         val viewModelFactory = Injection.provideViewModelFactory()
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(UserListViewModel::class.java)
+        lifecycle.addObserver(viewModel)
     }
 
     private fun setUpAdapter() {

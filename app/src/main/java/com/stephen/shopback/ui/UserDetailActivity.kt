@@ -44,12 +44,7 @@ class UserDetailActivity : AppCompatActivity() {
 
         userId = intent.getStringExtra(PARAM_USER_ID)
 
-        requestOptions.placeholder(R.drawable.ic_account_circle)
-        requestOptions.error(R.drawable.ic_account_circle)
-
-        val viewModelFactory = Injection.provideViewModelFactory()
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(UserDetailViewModel::class.java)
-
+        setUpAttribute()
 
         setUpViewState()
 
@@ -58,11 +53,21 @@ class UserDetailActivity : AppCompatActivity() {
         refreshUser()
     }
 
+    private fun setUpAttribute() {
+        requestOptions.placeholder(R.drawable.ic_account_circle)
+        requestOptions.error(R.drawable.ic_account_circle)
+
+        val viewModelFactory = Injection.provideViewModelFactory()
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(UserDetailViewModel::class.java)
+
+        lifecycle.addObserver(viewModel)
+    }
+
     private fun setUpListener() {
-        swipe_layout_detail.setOnRefreshListener {
+        binding.swipeLayoutDetail.setOnRefreshListener {
             refreshUser()
         }
-        button_close.setOnClickListener {
+        binding.buttonClose.setOnClickListener {
             finish()
         }
     }
