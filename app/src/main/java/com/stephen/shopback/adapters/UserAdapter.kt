@@ -1,5 +1,6 @@
 package com.stephen.shopback.adapters
 
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -42,8 +43,17 @@ class UserAdapter(var dataList: ArrayList<UserDataModel>, var listener: UserAdap
     }
 
     fun addAll(data: List<UserDataModel>) {
+//        val newList: ArrayList<UserDataModel> = this.dataList.clone() as ArrayList<UserDataModel>
+//        newList.addAll(data)
+//
+//        val diffCallback = UserDiffCallback(this.dataList, newList)
+//        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        val position = dataList.size
         dataList.addAll(data)
-        notifyDataSetChanged()
+
+        notifyItemInserted(position)
+//        diffResult.dispatchUpdatesTo(this)
+//        notifyDataSetChanged()
     }
 
     interface OnItemClickListener {
@@ -63,5 +73,23 @@ class UserAdapter(var dataList: ArrayList<UserDataModel>, var listener: UserAdap
         notifyDataSetChanged()
     }
 
+    class UserDiffCallback(private val oldList: List<UserDataModel>, private val newList: List<UserDataModel>) : DiffUtil.Callback() {
+        override fun getOldListSize() = oldList.size
+
+        override fun getNewListSize() = newList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].login == newList[newItemPosition].login
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].name == newList[newItemPosition].name
+        }
+
+        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+            // Implement method if you're going to use ItemAnimator
+            return super.getChangePayload(oldItemPosition, newItemPosition)
+        }
+    }
     class BindingHolder(var binding: RowUserListBinding) : RecyclerView.ViewHolder(binding.root)
 }
